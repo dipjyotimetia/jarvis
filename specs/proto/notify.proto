@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+
+package notify;
+
+option go_package = "notify/notifypb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// Notification represents a single notification item.
+message Notification {
+  int32 id = 1; // Unique identifier for the notification.
+  string title = 2; // Title of the notification.
+  string message = 3; // Message content of the notification.
+  string recipient_id = 4; // ID of the recipient user.
+  string timestamp = 5; // Timestamp of the notification in "YYYY-MM-DD HH:MM:SS" format.
+  string status = 6; // Status of the notification (e.g., "sent", "delivered", "read").
+}
+
+// NotificationList is a list of notifications.
+message NotificationList {
+  repeated Notification notifications = 1;
+}
+
+// CreateNotificationRequest is the request type for the CreateNotification RPC method.
+message CreateNotificationRequest {
+  Notification notification = 1; // The notification to create.
+}
+
+// CreateNotificationResponse is the response type for the CreateNotification RPC method.
+message CreateNotificationResponse {
+  Notification notification = 1; // The created notification.
+}
+
+// GetNotificationsRequest is the request type for the GetNotifications RPC method.
+message GetNotificationsRequest {
+  string recipient_id = 1; // ID of the recipient user.
+}
+
+// GetNotificationsResponse is the response type for the GetNotifications RPC method.
+message GetNotificationsResponse {
+  NotificationList notifications = 1; // The list of notifications for the recipient user.
+}
+
+// Service definition.
+service NotificationService {
+  // CreateNotification creates a new notification.
+  rpc CreateNotification (CreateNotificationRequest) returns (CreateNotificationResponse) {
+    option (google.api.http) = {
+      post: "/v1/notifications"
+      body: "notification"
+    };
+  }
+
+  // GetNotifications gets a list of all notifications for a specific user.
+  rpc GetNotifications (GetNotificationsRequest) returns (GetNotificationsResponse) {
+    option (google.api.http) = {
+      get: "/v1/notifications/{recipient_id}"
+    };
+  }
+}

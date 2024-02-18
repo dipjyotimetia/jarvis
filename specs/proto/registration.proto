@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package rpc.user.v1;
+
+option go_package = "users/userpb";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+message RegisterRequest {
+  string id = 1;
+  string email = 2;
+  string password = 3;
+  string first_name = 4;
+  string last_name = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message RegisterResponse {
+  string id = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 5;
+}
+
+service UserService {
+  rpc RegisterUser(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/register"
+      body: "*"
+    };
+  }
+  rpc LoginUser(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/login"
+      body: "*"
+    };
+  }
+}

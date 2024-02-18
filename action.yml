@@ -1,0 +1,13 @@
+name: "JARVIS"
+description: "Get started with jarvis"
+author: "Dipjyoti Metia"
+inputs:
+  find:
+    description: "Input to use"
+    default: "world"
+outputs:
+  myOutput:
+    description: "Output from the action"
+runs:
+  using: "docker"
+  image: "Dockerfile"

@@ -1,4 +1,4 @@
-package engine
+package ai
 
 import (
 	"context"
@@ -30,7 +30,7 @@ func (c *GenClient) Close() {
 }
 
 func (c *GenClient) ProModel() *genai.GenerativeModel {
-	proModel := c.Client.GenerativeModel("gemini-pro")
+	proModel := c.Client.GenerativeModel("gemini-1.0-pro-latest")
 
 	proModel.SafetySettings = []*genai.SafetySetting{
 		{

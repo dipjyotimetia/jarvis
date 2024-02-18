@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package rpc.productsservice.v1;
+
+option go_package = ".;productsservice";
+option csharp_namespace = "ProductsService";
+option java_multiple_files = true;
+option java_outer_classname = "ProductsService";
+option java_package = "com.products";
+
+import "google/protobuf/timestamp.proto";
+
+// ProductsService provides methods to manage products
+service ProductsService {
+  rpc Create(CreateReq) returns (CreateRes) {}
+  rpc Update(UpdateReq) returns (UpdateRes) {}
+  rpc GetByID(GetByIDReq) returns (GetByIDRes) {}
+  rpc Search(SearchReq) returns (SearchRes) {}
+}
+
+// Product information
+message Product {
+  string ProductID = 1;      // Unique identifier for the product
+  string CategoryID = 2;      // Unique identifier for the product category
+  string Name = 3;            // Name of the product
+  string Description = 4;     // Product description
+  double Price = 5;           // Product price
+  string ImageURL = 6;        // URL for the main product image
+  repeated string Photos = 7; // List of URLs for additional product images
+  int64 Quantity = 8;         // Quantity of the product in stock
+  int64 Rating = 9;           // Product rating (1-5)
+  google.protobuf.Timestamp CreatedAt = 10; // Timestamp for when the product was created
+  google.protobuf.Timestamp UpdatedAt = 11; // Timestamp for when the product was last updated
+}
+
+message Empty {}
+
+// CreateReq represents the request to create a new product
+message CreateReq {
+  string CategoryID = 1;
+  string Name = 2;
+  string Description = 3;
+  double Price = 4;
+  string ImageURL = 5;
+  repeated string Photos = 6;
+  int64 Quantity = 7;
+  int64 Rating = 8;
+}
+
+// CreateRes represents the response after creating a new product
+message CreateRes {
+  Product Product = 1;
+}
+
+// UpdateReq represents the request to update an existing product
+message UpdateReq {
+  string ProductID = 1;
+  string CategoryID = 2;
+  string Name = 3;
+  string Description = 4;
+  double Price = 5;
+  string ImageURL = 6;
+  repeated string Photos = 7;
+  int64 Quantity = 8;
+  int64 Rating = 9;
+}
+
+// UpdateRes represents the response after updating a product
+message UpdateRes {
+  Product Product = 1;
+}
+
+// GetByIDReq represents the request to get a product by its unique identifier
+message GetByIDReq {
+  string ProductID = 1;
+}
+
+// GetByIDRes represents the response containing the product requested by its unique identifier
+message GetByIDRes {
+  Product Product = 1;
+}
+
+// SearchReq represents the request to search for products
+message SearchReq {
+  string Search = 1;
+  int64 page = 2;
+  int64 size = 3;
+}
+
+// SearchRes represents the response containing the search results for products
+message SearchRes {
+  int64 TotalCount = 1;
+  int64 TotalPages = 2;
+  int64 Page = 3;
+  int64 Size = 4;
+  bool HasMore = 5;
+  repeated Product Products = 6;
+}
