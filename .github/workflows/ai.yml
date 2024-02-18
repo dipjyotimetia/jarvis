@@ -1,4 +1,4 @@
-name: Manual workflow
+name: AI workflow
 
 on:
   workflow_dispatch:
@@ -14,7 +14,8 @@ on:
         # The data type of the input
         type: string
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  API_KEY: ${{ secrets.API_KEY }}
 jobs:
   # This workflow contains a single job called "greet"
   ai:
@@ -24,11 +25,20 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
   
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version: '1.22'
 
       - name: Ask Me
         run: go run ./cmd/main.go ${{ inputs.name }}
+

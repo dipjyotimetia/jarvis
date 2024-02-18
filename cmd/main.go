@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"jarvis/pkg/engine"
 	"os"
+
+	"github.com/dipjyotimetia/jarvis/pkg/engine"
 )
 
 func main() {
