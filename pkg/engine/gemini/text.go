@@ -1,4 +1,4 @@
-package ai
+package gemini
 
 import (
 	"bufio"
@@ -26,7 +26,7 @@ func (c *GenClient) GenerateTextStream(ctx context.Context, specs []genai.Text) 
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("Create golang grpc integration tests based on the above proto file."))
+	prompts = append(prompts, genai.Text("write table-driven test cases in Go gRPC specifically for the provided proto file."))
 
 	resp := c.ProModel().GenerateContentStream(ctx, prompts...)
 	for {
@@ -54,7 +54,7 @@ func (c *GenClient) GenerateTextStreamWriter(ctx context.Context, specs []genai.
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("Create golang grpc table driven tests based on the above proto."))
+	prompts = append(prompts, genai.Text("write golang grpc testcases based on the above proto."))
 
 	ct := time.Now().Format("2006-01-02-15-04-05")
 	files.CheckDirectryExists()

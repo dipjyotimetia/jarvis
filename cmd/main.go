@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 
-	"github.com/dipjyotimetia/jarvis/pkg/engine/ai"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/files"
+	"github.com/dipjyotimetia/jarvis/pkg/engine/gemini"
 )
 
 //find := os.Getenv("INPUT_FIND")
@@ -12,7 +12,7 @@ import (
 func main() {
 	ctx := context.Background()
 	// args := os.Args[0]
-	ai, err := ai.NewGenClient(ctx)
+	ai, err := gemini.NewGenClient(ctx)
 	if err != nil {
 		panic(err)
 	}

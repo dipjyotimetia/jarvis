@@ -1,7 +1,8 @@
-package ai
+package gemini
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/google/generative-ai-go/genai"
@@ -14,6 +15,7 @@ var (
 
 // GenClient is a wrapper around the generative ai client
 type GenClient struct {
+	ctx    context.Context
 	Client *genai.Client
 }
 
@@ -22,7 +24,7 @@ func NewGenClient(ctx context.Context) (*GenClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &GenClient{ai}, nil
+	return &GenClient{ctx, ai}, nil
 }
 
 func (c *GenClient) Close() {
@@ -30,7 +32,9 @@ func (c *GenClient) Close() {
 }
 
 func (c *GenClient) ProModel() *genai.GenerativeModel {
-	proModel := c.Client.GenerativeModel("gemini-1.0-pro-latest")
+	proModel := c.Client.GenerativeModel("gemini-1.0-pro")
+	fmt.Println(c.Client.ListModels(c.ctx))
+	proModel.SetTemperature(0.9)
 
 	proModel.SafetySettings = []*genai.SafetySetting{
 		{
