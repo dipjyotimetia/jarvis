@@ -13,7 +13,7 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-func (c *GenClient) GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error) {
+func (c *client) GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error) {
 	resp, err := c.ProModel().GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func (c *GenClient) GenerateText(ctx context.Context, prompt string) (*genai.Gen
 }
 
 // GenerateTextStream GenerateContentStream
-func (c *GenClient) GenerateTextStream(ctx context.Context, specs []genai.Text) error {
+func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text) error {
 	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
@@ -50,7 +50,7 @@ func (c *GenClient) GenerateTextStream(ctx context.Context, specs []genai.Text) 
 	return nil
 }
 
-func (c *GenClient) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, outputFolder string) error {
+func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, outputFolder string) error {
 	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
@@ -69,7 +69,6 @@ func (c *GenClient) GenerateTextStreamWriter(ctx context.Context, specs []genai.
 	defer writer.Flush()
 
 	response := c.ProModel().GenerateContentStream(ctx, prompts...)
-	c.CountTokens(ctx, prompts)
 	for {
 		resp, err := response.Next()
 		if errors.Is(err, iterator.Done) {

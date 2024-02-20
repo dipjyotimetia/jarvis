@@ -8,7 +8,8 @@ import (
 	"github.com/google/generative-ai-go/genai"
 )
 
-func (c *GenClient) CountTokens(ctx context.Context, parts []genai.Part) {
+// CountTokens counts the number of tokens in the model.
+func (c *client) CountTokens(ctx context.Context, parts []genai.Part) {
 	resp, err := c.ProModel().CountTokens(ctx, parts...)
 	if err != nil {
 		log.Fatal(err)

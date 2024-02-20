@@ -29,7 +29,7 @@ func GenerateTestModule() *cobra.Command {
 
 			ctx := context.Background()
 
-			ai, err := gemini.NewGenClient(ctx)
+			ai, err := gemini.New(ctx)
 			if err != nil {
 				panic(err)
 			}
@@ -64,7 +64,7 @@ func GenerateTestScenarios() *cobra.Command {
 
 			ctx := context.Background()
 
-			ai, err := gemini.NewGenClient(ctx)
+			ai, err := gemini.New(ctx)
 			if err != nil {
 				panic(err)
 			}
