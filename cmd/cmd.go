@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("author", "a", "Dipjyoti Metia", "Author name for copyright attribution")
+	rootCmd.PersistentFlags().StringP("author", "a", "Dipjyoti Metia", "")
 	rootCmd.AddCommand(commands.GenerateTestModule())
 	rootCmd.AddCommand(commands.GenerateTestScenarios())
 }

@@ -34,10 +34,10 @@ func ReadFile(spec string) ([]genai.Text, error) {
 		return nil, nil
 	}
 	defer file.Close()
-	var lines []genai.Text // Create a slice to hold the lines
+	var lines []genai.Text
 
 	reader := bufio.NewReader(file)
-	const bufferSize = 4096 // Adjust as needed
+	const bufferSize = 4096
 	buffer := make([]byte, bufferSize)
 
 	for {

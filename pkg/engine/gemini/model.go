@@ -23,6 +23,9 @@ func (c *client) ProModel() *genai.GenerativeModel {
 
 func (c *client) VisionModel() *genai.GenerativeModel {
 	visionModel := c.client.GenerativeModel("gemini-pro-vision")
+	visionModel.SetTemperature(0.8)
+	visionModel.SetTopK(40)
+	visionModel.SetTopP(0.8)
 
 	visionModel.SafetySettings = []*genai.SafetySetting{
 		{
