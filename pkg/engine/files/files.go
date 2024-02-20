@@ -12,7 +12,6 @@ import (
 )
 
 func IdentifySpecTypes(dir string) ([]string, error) {
-	fmt.Println("Identifying spec types...")
 	paths := []string{}
 	filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -54,8 +53,8 @@ func ReadFile(spec string) ([]genai.Text, error) {
 	return lines, nil
 }
 
-func CheckDirectryExists() {
-	if _, err := os.Stat("./output"); os.IsNotExist(err) {
-		os.Mkdir("./output", 0755)
+func CheckDirectryExists(output string) {
+	if _, err := os.Stat(fmt.Sprintf("./%s", output)); os.IsNotExist(err) {
+		os.Mkdir(fmt.Sprintf("./%s", output), 0755)
 	}
 }

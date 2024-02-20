@@ -1,4 +1,4 @@
-package ai
+package gemini
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/google/generative-ai-go/genai"
 )
 
-func (c *GenClient) GenerateVision(ctx context.Context, promptPart []genai.Part) (*genai.GenerateContentResponse, error) {
+func (c *client) GenerateVision(ctx context.Context, promptPart []genai.Part) (*genai.GenerateContentResponse, error) {
 	resp, err := c.VisionModel().GenerateContent(ctx, promptPart...)
 	if err != nil {
 		return nil, err
@@ -16,7 +16,7 @@ func (c *GenClient) GenerateVision(ctx context.Context, promptPart []genai.Part)
 	return resp, nil
 }
 
-func (c *GenClient) CompareImage(ctx context.Context, promptParts []string, search string) (*genai.GenerateContentResponse, error) {
+func (c *client) CompareImage(ctx context.Context, promptParts []string, search string) (*genai.GenerateContentResponse, error) {
 	if len(promptParts) == 0 {
 		return nil, fmt.Errorf("promptParts is empty")
 	}
@@ -47,7 +47,7 @@ func (c *GenClient) CompareImage(ctx context.Context, promptParts []string, sear
 	return resp, nil
 }
 
-func (c *GenClient) GenerateVisionStream(ctx context.Context, prompt string) (*genai.GenerateContentResponseIterator, error) {
+func (c *client) GenerateVisionStream(ctx context.Context, prompt string) (*genai.GenerateContentResponseIterator, error) {
 	resp := c.ProModel().GenerateContentStream(ctx, genai.Text(prompt))
 	for {
 		resp, err := resp.Next()

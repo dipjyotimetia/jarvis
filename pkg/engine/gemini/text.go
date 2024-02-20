@@ -1,8 +1,9 @@
-package ai
+package gemini
 
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -12,7 +13,7 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-func (c *GenClient) GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error) {
+func (c *client) GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error) {
 	resp, err := c.ProModel().GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {
 		return nil, err
@@ -20,25 +21,25 @@ func (c *GenClient) GenerateText(ctx context.Context, prompt string) (*genai.Gen
 	return resp, err
 }
 
-// GenerateContentStream
-func (c *GenClient) GenerateTextStream(ctx context.Context, specs []genai.Text) (*genai.GenerateContentResponseIterator, error) {
-	prompts := []genai.Part{}
+// GenerateTextStream GenerateContentStream
+func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text) error {
+	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("Create golang grpc integration tests based on the above proto file."))
+	prompts = append(prompts, genai.Text("what are possible test cases for the provided openapi spec file."))
 
 	resp := c.ProModel().GenerateContentStream(ctx, prompts...)
 	for {
 		resp, err := resp.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if resp.Candidates == nil {
-			return nil, nil
+			return nil
 		}
 		for _, candidate := range resp.Candidates {
 			for _, c := range candidate.Content.Parts {
@@ -46,19 +47,19 @@ func (c *GenClient) GenerateTextStream(ctx context.Context, specs []genai.Text) 
 			}
 		}
 	}
-	return nil, nil
+	return nil
 }
 
-func (c *GenClient) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text) error {
-	prompts := []genai.Part{}
+func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, outputFolder string) error {
+	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("Create golang grpc table driven tests based on the above proto."))
+	prompts = append(prompts, genai.Text("write golang testcases based on the above openapi spec."))
 
 	ct := time.Now().Format("2006-01-02-15-04-05")
-	files.CheckDirectryExists()
-	outputFile, err := os.Create(fmt.Sprintf("output/%s_output_test.md", ct))
+	files.CheckDirectryExists(outputFolder)
+	outputFile, err := os.Create(fmt.Sprintf("%s/%s_output_test.md", outputFolder, ct))
 	if err != nil {
 		return err
 	}
@@ -68,10 +69,9 @@ func (c *GenClient) GenerateTextStreamWriter(ctx context.Context, specs []genai.
 	defer writer.Flush()
 
 	response := c.ProModel().GenerateContentStream(ctx, prompts...)
-	c.CountTokens(ctx, prompts)
 	for {
 		resp, err := response.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
