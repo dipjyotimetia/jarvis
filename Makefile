@@ -1,0 +1,3 @@
+jarvis:
+	go build -o ./dist -ldflags="-X 'github.com/dipjyotimetia/jarvis/cmd/cmd.version=0.0.2'" ./...
+	.\dist\jarvis.exe generate-test --path="specs/openapi/v3.0" --output="output"

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	OPEN_AI_API_KEY = os.Getenv("OPEN_AI_API_KEY")
+	OpenAiApiKey = os.Getenv("OPEN_AI_API_KEY")
 )
 
 type GptClient struct {
@@ -18,7 +18,7 @@ type GptClient struct {
 }
 
 func NewClient(ctx context.Context, apiKey string) *GptClient {
-	keyCredential := azcore.NewKeyCredential(OPEN_AI_API_KEY)
+	keyCredential := azcore.NewKeyCredential(OpenAiApiKey)
 	client, err := azopenai.NewClientForOpenAI("https://api.openai.com/v1", keyCredential, nil)
 	if err != nil {
 		panic(err)

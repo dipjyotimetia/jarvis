@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	API_KEY = os.Getenv("API_KEY")
+	ApiKey = os.Getenv("API_KEY")
 )
 
 // GenClient is a wrapper around the generative ai client
@@ -20,7 +20,7 @@ type GenClient struct {
 }
 
 func NewGenClient(ctx context.Context) (*GenClient, error) {
-	ai, err := genai.NewClient(ctx, option.WithAPIKey(API_KEY))
+	ai, err := genai.NewClient(ctx, option.WithAPIKey(ApiKey))
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,9 @@ func (c *GenClient) Close() {
 func (c *GenClient) ProModel() *genai.GenerativeModel {
 	proModel := c.Client.GenerativeModel("gemini-1.0-pro")
 	fmt.Println(c.Client.ListModels(c.ctx))
-	proModel.SetTemperature(0.9)
+	proModel.SetTemperature(0.8)
+	proModel.SetTopK(40)
+	proModel.SetTopP(0.8)
 
 	proModel.SafetySettings = []*genai.SafetySetting{
 		{
