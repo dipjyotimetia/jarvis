@@ -2,9 +2,12 @@ package commands
 
 import (
 	"context"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/files"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/gemini"
+	"github.com/dipjyotimetia/jarvis/pkg/engine/prompt"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +30,25 @@ func GenerateTestModule() *cobra.Command {
 			specPath, _ := cmd.Flags().GetString("path")
 			outputPath, _ := cmd.Flags().GetString("output")
 
+			s := spinner.New(spinner.CharSets[36], 100*time.Millisecond)
+			s.Color("green")
+			s.Suffix = " Generating Tests..."
+			s.FinalMSG = "Tests Generated Successfully!\n"
+
+			languageContent := prompt.PromptContent{
+				ErrorMsg: "Please provide a valid language.",
+				Label:    "What programming lanaguage would you like to use?",
+				ItemType: "language",
+			}
+			language := prompt.SelectLanguage(languageContent)
+
+			specContent := prompt.PromptContent{
+				ErrorMsg: "Please provide a valid spec.",
+				Label:    "What spec would you like to use?",
+				ItemType: "spec",
+			}
+			spec := prompt.SelectLanguage(specContent)
+
 			ctx := context.Background()
 
 			ai, err := gemini.New(ctx)
@@ -42,10 +64,14 @@ func GenerateTestModule() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			err = ai.GenerateTextStreamWriter(ctx, reader, outputPath)
+
+			s.Start()
+
+			err = ai.GenerateTextStreamWriter(ctx, reader, outputPath, language, spec)
 			if err != nil {
 				panic(err)
 			}
+			s.Stop()
 			return nil
 		},
 	}
@@ -62,8 +88,15 @@ func GenerateTestScenarios() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			specPath, _ := cmd.Flags().GetString("path")
 
-			ctx := context.Background()
+			specContent := prompt.PromptContent{
+				ErrorMsg: "Please provide a valid spec.",
+				Label:    "What spec would you like to use?",
+				ItemType: "spec",
+			}
 
+			spec := prompt.SelectLanguage(specContent)
+
+			ctx := context.Background()
 			ai, err := gemini.New(ctx)
 			if err != nil {
 				panic(err)
@@ -73,11 +106,13 @@ func GenerateTestScenarios() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
+
 			reader, err := files.ReadFile(file[0])
 			if err != nil {
 				panic(err)
 			}
-			err = ai.GenerateTextStream(ctx, reader)
+
+			err = ai.GenerateTextStream(ctx, reader, spec)
 			if err != nil {
 				panic(err)
 			}

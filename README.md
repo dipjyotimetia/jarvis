@@ -1,6 +1,6 @@
 # jarvis Test Automation Assistant
 
-A powerful CLI tool powered by Google's Gemini Pro LLM and Gemini Vision Pro to revolutionize software testing. Jarvis aims to streamline test scenario generation and testcase writing directly from API specifications or protocol buffer definitions.
+Jarvis is a powerful CLI tool that leverages advanced generative AI technologies (such as Google's Gemini Pro LLM and Gemini Vision Pro) to streamline and enhance various software testing activities. It aims to revolutionize how we approach test case generation and scenario creation.
 
 ## Features:
 

@@ -12,12 +12,12 @@ var version = "0.0.2"
 
 var rootCmd = &cobra.Command{
 	Use:     "jarvis",
-	Short:   "jarvis is a very fast static site generator",
+	Short:   "A generative AI-driven CLI for testing",
+	Long:    `Jarvis is a powerful toolkit that leverages generative AI to streamline and enhance various testing activities.`,
 	Version: version,
-	Long:    `Generative ai based cli to perform different testing activity`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			cmd.Help()
+			_ = cmd.Help()
 			return
 		}
 	},
@@ -31,7 +31,7 @@ func init() {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }

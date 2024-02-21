@@ -22,12 +22,12 @@ func (c *client) GenerateText(ctx context.Context, prompt string) (*genai.Genera
 }
 
 // GenerateTextStream GenerateContentStream
-func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text) error {
+func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text, specType string) error {
 	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("what are possible test cases for the provided openapi spec file."))
+	prompts = append(prompts, genai.Text(fmt.Sprintf("what are possible test scenarios for the provided %s spec file.", specType)))
 
 	resp := c.ProModel().GenerateContentStream(ctx, prompts...)
 	for {
@@ -50,12 +50,12 @@ func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text) err
 	return nil
 }
 
-func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, outputFolder string) error {
+func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, language, specType string, outputFolder string) error {
 	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text("write golang testcases based on the above openapi spec."))
+	prompts = append(prompts, genai.Text(fmt.Sprintf("generate %s tests based for this %s spec.", language, specType)))
 
 	ct := time.Now().Format("2006-01-02-15-04-05")
 	files.CheckDirectryExists(outputFolder)
