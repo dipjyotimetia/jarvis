@@ -12,8 +12,6 @@ builds:
       - linux
       - windows
       - darwin
-    flags:
-      - -ldflags "-X 'github.com/dipjyotimetia/jarvis/cmd.version={{.Version}}'" 
 
 archives:
   - format: tar.gz
