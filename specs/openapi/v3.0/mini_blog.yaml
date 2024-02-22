@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: Enhanced Mini-Blog API
+  description: Expanded API for managing blog posts, comments, and user profiles.
+  version: 1.2.0
+
+servers:
+  - url: https://api.myminiblog.com/v1
+
+paths:
+  # --- Posts Endpoint ---
+  /posts:
+    get: # ... (Similar to the basic example)
+    post: # ... (Similar to the basic example)
+
+  /posts/{postId}:
+    get: # ... (Similar to the basic example)
+    patch: 
+      summary: Update a blog post
+      description: Allows partial updates to a blog post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPost' 
+      responses:
+        '200':
+          description: Post Updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Post not found 
+    delete:
+      summary: Delete a blog post
+      parameters: 
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          description: Post not found
+
+  # --- Comments Endpoint ---
+  /posts/{postId}/comments:
+    get:
+      summary: Get comments for a blog post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An array of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      summary: Add a new comment
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+
+  # --- User Endpoint ---
+  /users/{userId}:
+    get:
+      summary: Get user profile
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+components:
+  schemas:
+    BlogPost:  # ... (From basic example)
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        author:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    User:
+      type: object
+      properties:
+        id: 
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email 
+
+  # Example for security implementation
+  securitySchemes:
+    apiKeyAuth:  
+      type: apiKey
+      in: header
+      name: X-API-Key 
+
+security:
+  - apiKeyAuth: [] 

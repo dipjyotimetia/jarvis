@@ -1,0 +1,45 @@
+{
+  "namespace": "com.testing.avro",
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {"name": "id", "type": "int"},
+    {"name": "username", "type": "string"},
+    {"name": "email", "type": "string"},
+    {"name": "address", "type": {
+       "type": "record",
+       "name": "Address",
+       "fields": [
+          {"name": "street", "type": "string"},
+          {"name": "city", "type": "string"},
+          {"name": "zipcode", "type": "string"},
+          {"name": "geocoordinates", "type": {
+              "type": "record",
+              "name": "GeoCoordinates",
+              "fields": [
+                {"name": "latitude", "type": "double"},
+                {"name": "longitude", "type": "double"}
+              ]
+           }, "default": null } 
+       ]
+     }, "default": null
+    },
+    {"name": "signup_timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "preferences", "type": {
+        "type": "map", 
+        "values": "string"
+    }, "default": {} },
+    {"name": "order_history", "type": {
+        "type": "array",
+        "items": {
+            "type": "record",
+            "name": "Order",
+            "fields": [
+               {"name": "order_id", "type": "string"},
+               {"name": "items", "type": {"type": "array", "items": "string"}},
+               {"name": "total_cost", "type": "double"}
+            ]
+        } 
+    }, "default": [] }
+  ]
+}

@@ -2,55 +2,78 @@
 ```md
 ```sh
 go build -o ./dist -ldflags="-X 'github.com/dipjyotimetia/jarvis/cmd/cmd.version=0.0.2'" ./...
-.\dist\jarvis.exe generate-scenarios --path="specs/openapi/v3.0"
+.\dist\jarvis.exe generate-scenarios --path="specs/openapi/v3.0/mini_blog.yaml"
 ```
+**Test Scenario 1: Retrieve All Blog Posts**
 
-**Positive Test Cases:**
+* Precondition:
+ The API server is up and running.
+* Action: Send a GET request to the "/posts" endpoint.
+* Expected Result: The server responds with
+ a status code of 200 and a list of all blog posts in JSON format.
 
-* **List all pets (GET /pets):
-**
-    * Send a GET request to `/pets` without any query parameters.
-    * Expected response: Status code 200, a list
- of pets in JSON format.
-* **Create a pet (POST /pets):**
-    * Send a POST request to `/pets` with a valid pet object in the request body.
-    * Expected response: Status code 201, no response body.
-* **Get pet by ID (
-GET /pets/{petId}):**
-    * Send a GET request to `/pets/{petId}` with a valid pet ID.
-    * Expected response: Status code 200, the pet object in JSON format.
+**Test Scenario 2: Create a New Blog Post**
 
-**Negative Test Cases:**
+* Precondition: The API server is up and running.
+* Action: Send a POST request to the "/posts" endpoint with a valid JSON payload
+ representing a new blog post.
+* Expected Result: The server responds with a status code of 201 and the newly created blog post in JSON format.
 
-* **List all pets with invalid limit (GET /pets):**
-    * Send a GET request to `/pets` with an invalid limit value (e.g., -10).
-    * Expected response: Status code 400 (Bad Request), an error message in JSON format.
-* **Create a pet with invalid data (POST
- /pets):**
-    * Send a POST request to `/pets` with an invalid pet object (e.g., missing required properties).
-    * Expected response: Status code 400 (Bad Request), an error message in JSON format.
-* **Get pet by invalid ID (GET /pets/{petId}):**
-    * Send a GET request to `/pets/{petId}` with an invalid pet ID (e.g., "abc").
-    * Expected response: Status code 404 (Not Found), an error message in JSON format.
+**Test Scenario 3: Retrieve a Specific Blog Post**
 
-**Edge Cases:**
+* Precondition: The API server is up and running.
+* Action: Send a GET request to the "/posts/{postId}" endpoint with a valid postId.
+* Expected Result: The server responds with a status code of 200 and the details of the requested blog post in JSON format.
 
-* **List all pets with maximum limit (GET /pets):**
-    * Send a GET request to `/pets` with the maximum allowed limit value (100).
-    * Expected response: Status code 200, a list of 100 pets in JSON format.
-* **Create a pet with empty name (POST /pets):**
-    * Send a POST request to `/pets` with a pet object with an empty name.
-    * Expected response: Status code 201, no response body.
-* **Get pet with a non-existent ID (GET /pets/{petId
-}):**
-    * Send a GET request to `/pets/{petId}` with a non-existent pet ID.
-    * Expected response: Status code 404 (Not Found), an error message in JSON format.
+**Test Scenario 4: Update a Blog Post**
+
+* Precondition: The API
+ server is up and running.
+* Action: Send a PATCH request to the "/posts/{postId}" endpoint with a valid postId and a JSON payload containing the updated fields.
+* Expected Result: The server responds with a status code of 200 and the updated blog post in JSON format.
+
+**Test Scenario 5: Delete a Blog Post**
+
+* Precondition: The API server is up and running.
+* Action: Send a DELETE request to the "/posts/{postId}" endpoint with a valid postId.
+* Expected Result: The server responds with a status code of 204 and no content in the response body.
+
+**Test Scenario 6: Retrieve Comments for a Blog Post**
+
+* Precondition: The API server is up and running.
+* Action: Send a GET request to the "/posts/{postId}/comments" endpoint with a valid postId.
+* Expected Result: The server responds with a status code of 200 and a list of comments for the specified blog post in JSON format.
+
+**Test Scenario 7: Add a New Comment**
+
+* Precondition: The API server is up and running.
+* Action: Send a POST request to the "/posts/{postId}/comments" endpoint
+ with a valid postId and a JSON payload representing a new comment.
+* Expected Result: The server responds with a status code of 201 and the newly created comment in JSON format.
+
+**Test Scenario 8: Retrieve User Profile**
+
+* Precondition: The API server is up and running.
+* Action: Send a GET request to the "/users/{userId}" endpoint with a valid userId.
+* Expected Result: The server responds with a status code of 200 and the user profile details in JSON format.
+
+**Test Scenario 9: Handle Invalid Input**
+
+* Precondition: The API server is up and running.
+* Action: Send a request to an endpoint with invalid input (e.g., an invalid postId or userId).
+* Expected Result: The server responds with a status code of 400 (Bad Request) and an error message in the response body.
+
+**Test Scenario 10: Handle Non-existent Resources**
+
+* Precondition: The API server is up and running.
+* Action: Send a request to an endpoint with a non-existent resource (e.g., a postId or userId that does not exist).
+* Expected Result: The server responds with a status code of 404 (Not Found) and an error message in the response body.
 ```
 
 
 ```md
 ```sh
- .\dist\jarvis.exe generate-test --path="specs/proto" --output="output"
+ jarvis generate-test --path="specs/proto" --output="output"
 ```
 ```go
 import (

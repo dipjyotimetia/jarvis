@@ -8,6 +8,7 @@ import (
 	"github.com/google/generative-ai-go/genai"
 )
 
+// GenerateVision ...
 func (c *client) GenerateVision(ctx context.Context, promptPart []genai.Part) (*genai.GenerateContentResponse, error) {
 	resp, err := c.VisionModel().GenerateContent(ctx, promptPart...)
 	if err != nil {
@@ -16,6 +17,7 @@ func (c *client) GenerateVision(ctx context.Context, promptPart []genai.Part) (*
 	return resp, nil
 }
 
+// CompareImage ...
 func (c *client) CompareImage(ctx context.Context, promptParts []string, search string) (*genai.GenerateContentResponse, error) {
 	if len(promptParts) == 0 {
 		return nil, fmt.Errorf("promptParts is empty")
@@ -47,6 +49,7 @@ func (c *client) CompareImage(ctx context.Context, promptParts []string, search 
 	return resp, nil
 }
 
+// GenerateVisionStream ...
 func (c *client) GenerateVisionStream(ctx context.Context, prompt string) (*genai.GenerateContentResponseIterator, error) {
 	resp := c.ProModel().GenerateContentStream(ctx, genai.Text(prompt))
 	for {

@@ -13,6 +13,7 @@ import (
 	"google.golang.org/api/iterator"
 )
 
+// GenerateText GenerateContent
 func (c *client) GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error) {
 	resp, err := c.ProModel().GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {
@@ -27,7 +28,7 @@ func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text, spe
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text(fmt.Sprintf("what are possible test scenarios for the provided %s spec file.", specType)))
+	prompts = append(prompts, genai.Text(fmt.Sprintf("Generate all possible test scenarios in simple english for the provided %s spec file.", specType)))
 
 	resp := c.ProModel().GenerateContentStream(ctx, prompts...)
 	for {
@@ -42,20 +43,23 @@ func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text, spe
 			return nil
 		}
 		for _, candidate := range resp.Candidates {
-			for _, c := range candidate.Content.Parts {
-				fmt.Println(c)
-			}
+			go func(parts []genai.Part) {
+				for _, c := range parts {
+					fmt.Println(c)
+				}
+			}(candidate.Content.Parts)
 		}
 	}
 	return nil
 }
 
+// GenerateTextStreamWriter GenerateContentStream
 func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, language, specType string, outputFolder string) error {
 	var prompts []genai.Part
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text(fmt.Sprintf("generate %s tests based for this %s spec.", language, specType)))
+	prompts = append(prompts, genai.Text(fmt.Sprintf("Generate %s tests based on this %s spec.", language, specType)))
 
 	ct := time.Now().Format("2006-01-02-15-04-05")
 	files.CheckDirectryExists(outputFolder)
@@ -81,9 +85,11 @@ func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Tex
 			return nil
 		}
 		for _, candidate := range resp.Candidates {
-			for _, c := range candidate.Content.Parts {
-				fmt.Fprintln(writer, c)
-			}
+			go func(parts []genai.Part) {
+				for _, c := range parts {
+					fmt.Fprintln(writer, c)
+				}
+			}(candidate.Content.Parts)
 		}
 	}
 	return nil
