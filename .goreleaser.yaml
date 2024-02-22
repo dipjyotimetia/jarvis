@@ -8,6 +8,8 @@ builds:
   - env:
       - CGO_ENABLED=0
       - PROJECT_VERSION={{ .Version }}
+    flags:
+      - -ldflags "-X 'github.com/dipjyotimetia/jarvis/cmd.version={{.Version}}'"
     goos:
       - linux
       - windows
