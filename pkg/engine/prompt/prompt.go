@@ -20,6 +20,7 @@ type PromptContent struct {
 	ErrorMsg string
 	Label    string
 	ItemType string
+	Items    []string
 }
 
 // CompareSpecFiles returns a prompt to compare two spec files
@@ -72,7 +73,7 @@ func SelectLanguage(pc PromptContent) string {
 	return result
 }
 
-func getFrameworksForLanguage(language string) []string {
+func setFrameworksForLanguage(language string) []string {
 	switch language {
 	case "Go":
 		return []string{"Gin", "Echo", "Fiber", "gRPC"}

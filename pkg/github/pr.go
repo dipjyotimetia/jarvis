@@ -1,6 +1,7 @@
 package github
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/google/go-github/v59/github"
@@ -36,7 +37,17 @@ func (c *Client) ChekPR() (string, error) {
 			if prDetails.GetMerged() {
 				return "", err
 			}
-			return prDetails.GetBody(), nil
+			diff, _, err := c.client.PullRequests.GetRaw(c.ctx, owner, repo, *prDetails.Number, github.RawOptions{
+				Type: github.Diff,
+			})
+			if err != nil {
+				fmt.Println("Error fetching diff:", err)
+				return "", err
+			}
+			if len(diff) == 0 {
+				return "", err
+			}
+			return diff, nil
 		}
 	}
 	return "", err

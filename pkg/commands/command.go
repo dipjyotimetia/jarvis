@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -49,27 +50,27 @@ func GenerateTestModule() *cobra.Command {
 			}
 			spec := prompt.SelectLanguage(specContent)
 
-			ctx := context.Background()
-
-			ai, err := gemini.New(ctx)
-			if err != nil {
-				panic(err)
-			}
-
 			file, err := files.IdentifySpecTypes(specPath)
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to identify spec types: %w", err)
 			}
+
 			reader, err := files.ReadFile(file[0])
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to read spec file: %w", err)
 			}
 
 			s.Start()
+			ctx := context.Background()
+			ai, err := gemini.New(ctx)
+			if err != nil {
+				return fmt.Errorf("failed to create Gemini engine: %w", err)
+			}
 
 			err = ai.GenerateTextStreamWriter(ctx, reader, outputPath, language, spec)
 			if err != nil {
-				panic(err)
+				s.FinalMSG = "Test generation failed: %v\n"
+				return err
 			}
 			s.Stop()
 			return nil
@@ -99,22 +100,22 @@ func GenerateTestScenarios() *cobra.Command {
 			ctx := context.Background()
 			ai, err := gemini.New(ctx)
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to create Gemini engine: %w", err)
 			}
 
 			file, err := files.IdentifySpecTypes(specPath)
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to identify spec types: %w", err)
 			}
 
 			reader, err := files.ReadFile(file[0])
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to read spec file: %w", err)
 			}
 
 			err = ai.GenerateTextStream(ctx, reader, spec)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			return nil
 		},

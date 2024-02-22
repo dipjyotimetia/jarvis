@@ -44,7 +44,7 @@ func ReadFile(spec string) ([]genai.Text, error) {
 		bytesRead, err := reader.Read(buffer)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Println("Error reading file:", err)
+				fmt.Errorf("Error reading file:", err)
 			}
 			break
 		}

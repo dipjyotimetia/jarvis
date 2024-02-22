@@ -22,3 +22,13 @@ func (c *Client) ChekPRComment(prNumber int) (string, error) {
 	}
 	return "", nil
 }
+
+func (c *Client) CreatePRDiff(prNumber int) (string, error) {
+	diff, _, err := c.client.PullRequests.GetRaw(c.ctx, owner, repo, prNumber, github.RawOptions{
+		Type: github.Diff,
+	})
+	if err != nil {
+		return "", err
+	}
+	return string(diff), nil
+}
