@@ -7,10 +7,13 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+      - PROJECT_VERSION={{ .Version }}
     goos:
       - linux
       - windows
       - darwin
+    flags:
+      - -ldflags "-X 'main.Version={{.Version}}'" 
 
 archives:
   - format: tar.gz
