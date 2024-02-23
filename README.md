@@ -12,4 +12,4 @@ Leveraging the capabilities of language models, Jarvis excels at crafting detail
 
 Experience the future of software testing with Jarvis - where AI meets precision and efficiency.
 
-[Setup Documentation](docs\setup.md)
+[Setup Documentation](docs/setup.md)
