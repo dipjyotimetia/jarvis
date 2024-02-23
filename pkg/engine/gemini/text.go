@@ -28,7 +28,7 @@ func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text, spe
 	for _, spec := range specs {
 		prompts = append(prompts, spec)
 	}
-	prompts = append(prompts, genai.Text(fmt.Sprintf("Generate all possible test scenarios in simple english for the provided %s spec file.", specType)))
+	prompts = append(prompts, genai.Text(fmt.Sprintf("Generate all possible positive and negative test scenarios in simple english for the provided %s spec file.", specType)))
 
 	resp := c.ProModel().GenerateContentStream(ctx, prompts...)
 	for {
