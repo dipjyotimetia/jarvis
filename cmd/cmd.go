@@ -27,6 +27,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("author", "a", "Dipjyoti Metia", "")
 	rootCmd.AddCommand(commands.GenerateTestModule())
 	rootCmd.AddCommand(commands.GenerateTestScenarios())
+	rootCmd.AddCommand(commands.SpecAnalyzer())
 }
 
 func Execute() {

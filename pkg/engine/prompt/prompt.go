@@ -40,7 +40,7 @@ func SelectLanguage(pc PromptContent) string {
 	case "language":
 		items = []string{"Go", "Python", "JavaScript", "java", "TypeScript"}
 	case "spec":
-		items = []string{"avro", "protobuf", "swagger", "OpenAPI3"}
+		items = []string{"avro", "protobuf", "swagger", "openapi"}
 	default:
 		items = []string{}
 		fmt.Println("Invalid prompt type")
