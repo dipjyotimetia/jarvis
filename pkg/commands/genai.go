@@ -50,7 +50,7 @@ func GenerateTestModule() *cobra.Command {
 			}
 			spec := prompt.SelectLanguage(specContent)
 
-			file, err := files.IdentifySpecTypes(specPath)
+			file, err := files.ListFiles(specPath)
 			if err != nil {
 				return fmt.Errorf("failed to identify spec types: %w", err)
 			}
@@ -103,7 +103,7 @@ func GenerateTestScenarios() *cobra.Command {
 				return fmt.Errorf("failed to create Gemini engine: %w", err)
 			}
 
-			file, err := files.IdentifySpecTypes(specPath)
+			file, err := files.ListFiles(specPath)
 			if err != nil {
 				return fmt.Errorf("failed to identify spec types: %w", err)
 			}
