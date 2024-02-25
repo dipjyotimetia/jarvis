@@ -1,23 +1,29 @@
 package openai
 
 import (
-	"context"
-
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
+	"os"
 )
 
-type Client struct {
-	Client *azopenai.Client
+var apiKey = os.Getenv("OPEN_AI_API_KEY")
+
+type Client interface {
+	GenerateText() (string, error)
+	GenerateTextStream() error
 }
 
-func New(ctx context.Context) (*Client, error) {
-	keyCredential := azcore.NewKeyCredential("API_KEY")
-	client, err := azopenai.NewClientForOpenAI("https://api.openai.com/v1", keyCredential, nil)
+type client struct {
+	client *azopenai.Client
+}
+
+func New() (Client, error) {
+	keyCredential := azcore.NewKeyCredential(apiKey)
+	ai, err := azopenai.NewClientForOpenAI("https://api.openai.com/v1", keyCredential, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{
-		Client: client,
+	return &client{
+		ai,
 	}, nil
 }
