@@ -1,4 +1,4 @@
-package main
+package github
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ import (
 	"github.com/go-git/go-git/v5/storage/memory"
 )
 
-func main() {
+func CheckVersion() {
 	usr, err := user.Current()
 	if err != nil {
 		fmt.Println("Error getting user information:", err)
