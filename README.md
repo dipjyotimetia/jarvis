@@ -2,6 +2,8 @@
 
 🚀 A generative AI-driven CLI for testing 🚀
 
+<img src="docs/assets/jarvis.jpg" width="400">
+
 Jarvis is a powerful CLI tool that leverages advanced generative AI technologies (such as Google's Gemini Pro LLM and Gemini Vision Pro) to streamline and enhance various software testing activities. It aims to revolutionize how we approach test case generation and scenario creation.
 
 ### Effortless Test Scenario Generation
