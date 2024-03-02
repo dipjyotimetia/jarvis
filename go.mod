@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai v0.4.1
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.2
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.10.0
 	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/briandowns/spinner v1.23.0
 	github.com/ctreminiom/go-atlassian v1.5.1
@@ -80,9 +80,8 @@ require (
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.18.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240228224816-df926f6c8641 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240228224816-df926f6c8641 // indirect
 	google.golang.org/grpc v1.62.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
