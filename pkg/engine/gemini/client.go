@@ -8,7 +8,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-var apiKey = os.Getenv("API_KEY")
+var apiKey = os.Getenv("GEMINI_API_KEY")
 
 type Client interface {
 	GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error)
