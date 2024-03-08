@@ -65,21 +65,19 @@ func OpenApiAnalyzer(specFiles []string) {
 	table.Render()
 }
 
-func ProtoAnalyzer(protoFiles []string) {
+func ProtoAnalyzer(protoFiles []string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"File", "Service", "Method", "Input Type", "Output Type", "Streaming"})
 
 	for _, protoFile := range protoFiles {
 		data, err := os.ReadFile(protoFile)
 		if err != nil {
-			fmt.Println("Error reading file:", err)
-			continue
+			return fmt.Errorf("error reading file %s: %v", protoFile, err)
 		}
 
 		fds := &descriptorpb.FileDescriptorSet{}
 		if err := proto.Unmarshal(data, fds); err != nil {
-			fmt.Println("Error parsing Proto:", err)
-			continue
+			return fmt.Errorf("error parsing Proto file %s: %v", protoFile, err)
 		}
 
 		for _, file := range fds.File {
@@ -104,4 +102,5 @@ func ProtoAnalyzer(protoFiles []string) {
 	}
 
 	table.Render()
+	return nil
 }

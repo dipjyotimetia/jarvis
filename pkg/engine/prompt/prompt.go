@@ -79,7 +79,7 @@ func setFrameworksForLanguage(language string) []string {
 		return []string{"Gin", "Echo", "Fiber", "gRPC"}
 	case "Python":
 		return []string{"Django", "Flask", "FastAPI", "gRPC"}
-	case "java":
+	case "Java":
 		return []string{"Spring", "JAX-RS", "restassured", "gRPC"}
 	case "JavaScript":
 		return []string{"supertest", "axios", "http", "gRPC"}

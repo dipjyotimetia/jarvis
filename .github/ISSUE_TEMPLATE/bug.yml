@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: something isn't working as expected 🤔.
+description: Something isn't working as expected 🤔.
 body:
   - type: markdown
     attributes:
@@ -12,7 +12,7 @@ body:
   - type: input
     id: os
     attributes:
-      label: Operating system
+      label: Operating System
       description: "Which operating system do you use? Please provide the version as well."
       placeholder: "macOS Big Sur 11.5.2"
     validations:
@@ -20,9 +20,9 @@ body:
   - type: input
     id: golang
     attributes:
-      label: go Version
-      description: "Please provide the go version."
-      placeholder: "GO 1.22"
+      label: Go Version
+      description: "Please provide the Go version."
+      placeholder: "Go 1.22"
     validations:
       required: true
   - type: dropdown
@@ -39,18 +39,27 @@ body:
   - type: textarea
     id: bug-description
     attributes:
-      label: Bug description
-      description: What happened?
+      label: Bug Description
+      description: What happened? Please provide as much detail as possible.
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
-      description: Which steps do we need to take to reproduce this error?
+      label: Steps to Reproduce
+      description: Which steps do we need to take to reproduce this error? Please provide them in as much detail as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:
-      label: Relevant log output
+      label: Relevant Log Output
       description: If applicable, provide relevant log output. No need for backticks here.
       render: shell
