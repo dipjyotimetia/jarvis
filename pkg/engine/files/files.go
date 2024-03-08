@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -24,7 +25,18 @@ func ListFiles(dir string) ([]string, error) {
 			return nil
 		}
 		paths = append(paths, path)
-		fmt.Println(d.Name())
+
+		// Read the file
+		data, err := os.ReadFile(path)
+		if err != nil {
+			log.Printf("Error reading file %s: %v", path, err)
+			return nil
+		}
+
+		// Identify the file type
+		fileType := identifyFileType(data)
+		fmt.Printf("File: %s, Type: %s\n", d.Name(), fileType)
+
 		return nil
 	})
 	return paths, nil
@@ -57,11 +69,10 @@ func identifyFileType(data []byte) string {
 	return "Unknown"
 }
 
-func ReadFile(spec string) ([]genai.Text, error) {
-	file, err := os.Open(spec)
+func ReadFile(path string) ([]genai.Text, error) {
+	file, err := os.Open(path)
 	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return nil, nil
+		return nil, err
 	}
 	defer file.Close()
 	var lines []genai.Text
@@ -74,7 +85,7 @@ func ReadFile(spec string) ([]genai.Text, error) {
 		bytesRead, err := reader.Read(buffer)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Errorf("Error reading file:", err)
+				return nil, fmt.Errorf("Error reading file: %v", err)
 			}
 			break
 		}

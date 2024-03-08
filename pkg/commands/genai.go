@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -53,6 +54,9 @@ func GenerateTestModule() *cobra.Command {
 			file, err := files.ListFiles(specPath)
 			if err != nil {
 				return fmt.Errorf("failed to identify spec types: %w", err)
+			}
+			if len(file) == 0 {
+				return errors.New("no files found")
 			}
 
 			reader, err := files.ReadFile(file[0])
@@ -106,6 +110,9 @@ func GenerateTestScenarios() *cobra.Command {
 			file, err := files.ListFiles(specPath)
 			if err != nil {
 				return fmt.Errorf("failed to identify spec types: %w", err)
+			}
+			if len(file) == 0 {
+				return errors.New("no files found")
 			}
 
 			reader, err := files.ReadFile(file[0])
