@@ -1,6 +1,7 @@
 package github
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -22,7 +23,7 @@ func (c *Client) ChekPR() (string, error) {
 		return "", err
 	}
 	if len(pr) == 0 {
-		return "", err
+		return "", errors.New("no pull requests found")
 	}
 	for _, p := range pr {
 		ok, err := checkPrReference(p)
@@ -35,7 +36,7 @@ func (c *Client) ChekPR() (string, error) {
 				return "", err
 			}
 			if prDetails.GetMerged() {
-				return "", err
+				return "", errors.New("pull request already merged")
 			}
 			diff, _, err := c.client.PullRequests.GetRaw(c.ctx, owner, repo, *prDetails.Number, github.RawOptions{
 				Type: github.Diff,
@@ -45,12 +46,12 @@ func (c *Client) ChekPR() (string, error) {
 				return "", err
 			}
 			if len(diff) == 0 {
-				return "", err
+				return "", errors.New("no diff found")
 			}
 			return diff, nil
 		}
 	}
-	return "", err
+	return "", errors.New("no suitable pull request found")
 }
 
 func checkPrReference(pr *github.PullRequest) (bool, error) {

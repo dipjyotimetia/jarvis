@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"errors"
+
 	"github.com/dipjyotimetia/jarvis/pkg/engine/files"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/prompt"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/utils"
@@ -32,7 +34,7 @@ func SpecAnalyzer() *cobra.Command {
 				return err
 			}
 			if len(specs) == 0 {
-				return nil
+				return errors.New("no files found")
 			}
 			switch spec {
 			case "protobuf":

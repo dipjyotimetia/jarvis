@@ -2,6 +2,7 @@ package gemini
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/google/generative-ai-go/genai"
@@ -26,7 +27,11 @@ type client struct {
 	client *genai.Client
 }
 
+// New creates a new Gemini client.
 func New(ctx context.Context) (Client, error) {
+	if apiKey == "" {
+		return nil, errors.New("GEMINI_API_KEY is not set")
+	}
 	ai, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
 	if err != nil {
 		return nil, err
@@ -36,6 +41,7 @@ func New(ctx context.Context) (Client, error) {
 	}, nil
 }
 
+// Close closes the Gemini client.
 func (c *client) Close() {
 	c.client.Close()
 }

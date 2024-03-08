@@ -85,11 +85,12 @@ func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Tex
 			return nil
 		}
 		for _, candidate := range resp.Candidates {
-			go func(parts []genai.Part) {
-				for _, c := range parts {
-					fmt.Fprintln(writer, c)
+			for _, c := range candidate.Content.Parts {
+				_, err := fmt.Fprintln(writer, c)
+				if err != nil {
+					return err
 				}
-			}(candidate.Content.Parts)
+			}
 		}
 	}
 	return nil
