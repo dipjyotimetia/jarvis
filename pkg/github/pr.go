@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/google/go-github/v59/github"
+	"github.com/google/go-github/v61/github"
 )
 
 var owner = os.Getenv("GITHUB_OWNER")
