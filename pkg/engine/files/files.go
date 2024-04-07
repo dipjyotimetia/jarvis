@@ -85,7 +85,7 @@ func ReadFile(path string) ([]genai.Text, error) {
 		bytesRead, err := reader.Read(buffer)
 		if err != nil {
 			if err != io.EOF {
-				return nil, fmt.Errorf("Error reading file: %v", err)
+				return nil, fmt.Errorf("error reading file: %v", err)
 			}
 			break
 		}
