@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/olekukonko/tablewriter"
+	"google.golang.org/protobuf/types/descriptorpb"
 	"gopkg.in/yaml.v3"
 )
 
@@ -109,7 +110,6 @@ func ProtoAnalyzer(protoFiles []string) error {
 func GrpCurlCommand(protoFile, serviceName, methodName string) {
 	var grpCurl string
 	parser := protoparse.Parser{
-		//required for google proto files
 		ImportPaths:           []string{"."},
 		IncludeSourceCodeInfo: true,
 		InferImportPaths:      true,
@@ -119,17 +119,57 @@ func GrpCurlCommand(protoFile, serviceName, methodName string) {
 	if err != nil {
 		fmt.Errorf("error parsing Proto file %s: %v", protoFile, err)
 	}
+
+	serviceFound := false
+	methodFound := false
 	for _, file := range fds {
 		for _, service := range file.GetServices() {
 			if service.GetName() == serviceName {
+				serviceFound = true
 				for _, method := range service.GetMethods() {
 					if method.GetName() == methodName {
-						grpCurl = fmt.Sprintf("grpcurl -plaintext -proto %s -d '{\"%s\"}' localhost:50051 %s/%s",
-							"", method.AsMethodDescriptorProto().GetInputType(), service.GetFullyQualifiedName(), methodName)
+						message, err := createJSONRequestBody(method.GetInputType().AsDescriptorProto().GetField())
+						if err != nil {
+							fmt.Errorf("error creating JSON request body: %v", err)
+						}
+						grpCurl = fmt.Sprintf("grpcurl -plaintext -proto %s -d '%s' localhost:50051 %s/%s",
+							"", message, service.GetFullyQualifiedName(), method.GetName())
+						methodFound = true
+						break
 					}
 				}
 			}
+			if serviceFound && methodFound {
+				break
+			}
+		}
+		if serviceFound && methodFound {
+			break
 		}
 	}
+
+	if !serviceFound {
+		fmt.Errorf("service %s not found", serviceName)
+	}
+	if !methodFound {
+		fmt.Errorf("method %s not found in service %s", methodName, serviceName)
+	}
 	fmt.Println(grpCurl)
+}
+
+func createJSONRequestBody(fields []*descriptorpb.FieldDescriptorProto) (string, error) {
+	var fieldsMap = make(map[string]interface{})
+	fmt.Println(fields)
+	for _, field := range fields {
+		if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+			fieldsMap[field.GetJsonName()] = []interface{}{}
+		} else {
+			fieldsMap[field.GetJsonName()] = ""
+		}
+	}
+	jsonData, err := json.Marshal(fieldsMap)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonData), nil
 }
