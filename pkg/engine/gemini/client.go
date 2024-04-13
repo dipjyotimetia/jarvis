@@ -20,6 +20,7 @@ type Client interface {
 	GenerateVisionStream(ctx context.Context, prompt string) (*genai.GenerateContentResponseIterator, error)
 	VisionModel() *genai.GenerativeModel
 	ProModel() *genai.GenerativeModel
+	ProcessDataHouse(ctx context.Context, specs []genai.Text) error
 	Close()
 }
 

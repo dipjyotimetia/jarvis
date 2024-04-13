@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/olekukonko/tablewriter"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/descriptorpb"
 	"gopkg.in/yaml.v3"
 )
 
@@ -68,23 +67,22 @@ func OpenApiAnalyzer(specFiles []string) {
 func ProtoAnalyzer(protoFiles []string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"File", "Service", "Method", "Input Type", "Output Type", "Streaming"})
-
 	for _, protoFile := range protoFiles {
-		data, err := os.ReadFile(protoFile)
-		if err != nil {
-			return fmt.Errorf("error reading file %s: %v", protoFile, err)
+		parser := protoparse.Parser{
+			ImportPaths:           []string{"."},
+			IncludeSourceCodeInfo: true,
+			InferImportPaths:      true,
 		}
-
-		fds := &descriptorpb.FileDescriptorSet{}
-		if err := proto.Unmarshal(data, fds); err != nil {
+		fds, err := parser.ParseFiles(protoFile)
+		if err != nil {
 			return fmt.Errorf("error parsing Proto file %s: %v", protoFile, err)
 		}
 
-		for _, file := range fds.File {
-			for _, service := range file.Service {
-				for _, method := range service.Method {
+		for _, file := range fds {
+			for _, service := range file.GetServices() {
+				for _, method := range service.GetMethods() {
 					streaming := "No"
-					if method.GetClientStreaming() || method.GetServerStreaming() {
+					if method.AsMethodDescriptorProto().GetClientStreaming() || method.AsMethodDescriptorProto().GetServerStreaming() {
 						streaming = "Yes"
 					}
 
@@ -92,8 +90,8 @@ func ProtoAnalyzer(protoFiles []string) error {
 						file.GetName(),
 						service.GetName(),
 						method.GetName(),
-						method.GetInputType(),
-						method.GetOutputType(),
+						method.AsMethodDescriptorProto().GetInputType(),
+						method.AsMethodDescriptorProto().GetOutputType(),
 						streaming,
 					})
 				}
