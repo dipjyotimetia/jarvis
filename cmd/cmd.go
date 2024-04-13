@@ -28,6 +28,7 @@ func init() {
 	rootCmd.AddCommand(commands.GenerateTestModule())
 	rootCmd.AddCommand(commands.GenerateTestScenarios())
 	rootCmd.AddCommand(commands.SpecAnalyzer())
+	rootCmd.AddCommand(commands.GrpcCurlGenerator())
 }
 
 func Execute() {

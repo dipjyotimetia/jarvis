@@ -2,11 +2,18 @@ package gemini
 
 import "github.com/google/generative-ai-go/genai"
 
+const (
+	GEMINI_PRO        = "gemini-1.0-pro"
+	GEMINI_PRO_VISION = "gemini-pro-vision"
+	EMBEDDING         = "embedding-001"
+)
+
+// Model returns the model
 func (c *client) ProModel() *genai.GenerativeModel {
-	proModel := c.client.GenerativeModel("gemini-1.0-pro")
-	proModel.SetTemperature(0.8)
+	proModel := c.client.GenerativeModel(GEMINI_PRO)
+	proModel.SetTemperature(0.1)
 	proModel.SetTopK(40)
-	proModel.SetTopP(0.8)
+	proModel.SetTopP(0.9)
 
 	proModel.SafetySettings = []*genai.SafetySetting{
 		{
@@ -21,11 +28,12 @@ func (c *client) ProModel() *genai.GenerativeModel {
 	return proModel
 }
 
+// VisionModel returns the vision model
 func (c *client) VisionModel() *genai.GenerativeModel {
-	visionModel := c.client.GenerativeModel("gemini-pro-vision")
-	visionModel.SetTemperature(0.8)
+	visionModel := c.client.GenerativeModel(GEMINI_PRO_VISION)
+	visionModel.SetTemperature(0.1)
 	visionModel.SetTopK(40)
-	visionModel.SetTopP(0.8)
+	visionModel.SetTopP(0.9)
 
 	visionModel.SafetySettings = []*genai.SafetySetting{
 		{
@@ -38,4 +46,9 @@ func (c *client) VisionModel() *genai.GenerativeModel {
 		},
 	}
 	return visionModel
+}
+
+// EmbeddingModel returns the embedding model
+func (c *client) EmbeddingModel() *genai.EmbeddingModel {
+	return c.client.EmbeddingModel(EMBEDDING)
 }

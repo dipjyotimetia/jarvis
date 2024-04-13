@@ -1,10 +1,8 @@
 package files
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/fs"
 	"log"
 	"os"
@@ -70,28 +68,18 @@ func identifyFileType(data []byte) string {
 }
 
 func ReadFile(path string) ([]genai.Text, error) {
-	file, err := os.Open(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
-	var lines []genai.Text
 
-	reader := bufio.NewReader(file)
-	const bufferSize = 4096
-	buffer := make([]byte, bufferSize)
-
-	for {
-		bytesRead, err := reader.Read(buffer)
-		if err != nil {
-			if err != io.EOF {
-				return nil, fmt.Errorf("error reading file: %v", err)
-			}
-			break
-		}
-		lines = append(lines, genai.Text(buffer[:bytesRead]))
+	lines := strings.Split(string(data), "\n")
+	var texts []genai.Text
+	for _, line := range lines {
+		texts = append(texts, genai.Text(line))
 	}
-	return lines, nil
+
+	return texts, nil
 }
 
 func CheckDirectryExists(output string) {
