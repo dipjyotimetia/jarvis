@@ -69,6 +69,7 @@ func ProtoAnalyzer(protoFiles []string) error {
 	table.SetHeader([]string{"File", "Service", "Method", "Input Type", "Output Type", "Streaming"})
 	for _, protoFile := range protoFiles {
 		parser := protoparse.Parser{
+			//required for google proto files
 			ImportPaths:           []string{"."},
 			IncludeSourceCodeInfo: true,
 			InferImportPaths:      true,
@@ -81,8 +82,9 @@ func ProtoAnalyzer(protoFiles []string) error {
 		for _, file := range fds {
 			for _, service := range file.GetServices() {
 				for _, method := range service.GetMethods() {
+					descriptor := method.AsMethodDescriptorProto()
 					streaming := "No"
-					if method.AsMethodDescriptorProto().GetClientStreaming() || method.AsMethodDescriptorProto().GetServerStreaming() {
+					if descriptor.GetClientStreaming() || descriptor.GetServerStreaming() {
 						streaming = "Yes"
 					}
 
@@ -90,8 +92,8 @@ func ProtoAnalyzer(protoFiles []string) error {
 						file.GetName(),
 						service.GetName(),
 						method.GetName(),
-						method.AsMethodDescriptorProto().GetInputType(),
-						method.AsMethodDescriptorProto().GetOutputType(),
+						descriptor.GetInputType(),
+						descriptor.GetOutputType(),
 						streaming,
 					})
 				}
@@ -101,4 +103,33 @@ func ProtoAnalyzer(protoFiles []string) error {
 
 	table.Render()
 	return nil
+}
+
+// generateGrpcurlCommand generates a grpcurl command for a given service and method
+func GrpCurlCommand(protoFile, serviceName, methodName string) {
+	var grpCurl string
+	parser := protoparse.Parser{
+		//required for google proto files
+		ImportPaths:           []string{"."},
+		IncludeSourceCodeInfo: true,
+		InferImportPaths:      true,
+	}
+
+	fds, err := parser.ParseFiles(protoFile)
+	if err != nil {
+		fmt.Errorf("error parsing Proto file %s: %v", protoFile, err)
+	}
+	for _, file := range fds {
+		for _, service := range file.GetServices() {
+			if service.GetName() == serviceName {
+				for _, method := range service.GetMethods() {
+					if method.GetName() == methodName {
+						grpCurl = fmt.Sprintf("grpcurl -plaintext -proto %s -d '{\"%s\"}' localhost:50051 %s/%s",
+							"", method.AsMethodDescriptorProto().GetInputType(), service.GetFullyQualifiedName(), methodName)
+					}
+				}
+			}
+		}
+	}
+	fmt.Println(grpCurl)
 }
