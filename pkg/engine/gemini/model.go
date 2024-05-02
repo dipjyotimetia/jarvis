@@ -68,8 +68,3 @@ func (c *client) VisionModel() *genai.GenerativeModel {
 	}
 	return visionModel
 }
-
-// EmbeddingModel returns the embedding model
-func (c *client) EmbeddingModel() *genai.EmbeddingModel {
-	return c.client.EmbeddingModel(EMBEDDING)
-}

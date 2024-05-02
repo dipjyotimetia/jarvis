@@ -97,23 +97,6 @@ func (c *client) GenerateTextStreamFromFile(ctx context.Context, path string) er
 	return nil
 }
 
-// ProcessDataHouse ProcessDataHouse
-func (c *client) ProcessDataHouse(ctx context.Context, specs []genai.Text) error {
-	var prompts []genai.Part
-	for _, spec := range specs {
-		prompts = append(prompts, spec)
-	}
-
-	prompts = append(prompts, genai.Text("Generate all possible positive and negative test scenarios in simple english for the provided."))
-
-	resp, err := c.EmbeddingModel().EmbedContent(ctx, prompts...)
-	if err != nil {
-		return err
-	}
-	fmt.Println(resp.Embedding.Values)
-	return nil
-}
-
 // GenerateTextStreamWriter GenerateContentStream
 func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, language, specType string, outputFolder string) error {
 	var prompts []genai.Part
