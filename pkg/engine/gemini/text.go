@@ -53,6 +53,50 @@ func (c *client) GenerateTextStream(ctx context.Context, specs []genai.Text, spe
 	return nil
 }
 
+// GenerateTextStreamFromFile GenerateContentStream
+func (c *client) GenerateTextStreamFromFile(ctx context.Context, path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %w", err)
+	}
+	defer func() {
+		if cerr := f.Close(); cerr != nil && err == nil {
+			err = fmt.Errorf("failed to close file: %w", cerr)
+		}
+	}()
+
+	file, err := c.client.UploadFile(ctx, "", f, nil)
+	if err != nil {
+		return fmt.Errorf("failed to upload file: %w", err)
+	}
+
+	var prompts []genai.Part
+	prompts = append(prompts, genai.Text("Generate all possible positive and negative test scenarios in simple english for the provided spec file."))
+	prompts = append(prompts, genai.FileData{URI: file.URI})
+
+	resp := c.ProFileModel().GenerateContentStream(ctx, prompts...)
+	for {
+		resp, err := resp.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get next response: %w", err)
+		}
+		if resp.Candidates == nil {
+			return nil
+		}
+		for _, candidate := range resp.Candidates {
+			go func(parts []genai.Part) {
+				for _, c := range parts {
+					fmt.Println(c)
+				}
+			}(candidate.Content.Parts)
+		}
+	}
+	return nil
+}
+
 // ProcessDataHouse ProcessDataHouse
 func (c *client) ProcessDataHouse(ctx context.Context, specs []genai.Text) error {
 	var prompts []genai.Part

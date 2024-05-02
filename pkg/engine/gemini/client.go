@@ -14,6 +14,7 @@ var apiKey = os.Getenv("GEMINI_API_KEY")
 type Client interface {
 	GenerateText(ctx context.Context, prompt string) (*genai.GenerateContentResponse, error)
 	GenerateTextStream(ctx context.Context, specs []genai.Text, specType string) error
+	GenerateTextStreamFromFile(ctx context.Context, path string) error
 	GenerateTextStreamWriter(ctx context.Context, specs []genai.Text, language, specType string, outputFolder string) error
 	GenerateVision(ctx context.Context, promptPart []genai.Part) (*genai.GenerateContentResponse, error)
 	CompareImage(ctx context.Context, promptParts []string, search string) (*genai.GenerateContentResponse, error)
