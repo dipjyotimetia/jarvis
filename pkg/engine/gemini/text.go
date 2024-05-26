@@ -139,3 +139,46 @@ func (c *client) GenerateTextStreamWriter(ctx context.Context, specs []genai.Tex
 	}
 	return nil
 }
+
+func (c *client) ValidateApiSpec(ctx context.Context, specs []genai.Text, specType string, outputFolder string) error {
+	var prompts []genai.Part
+	for _, spec := range specs {
+		prompts = append(prompts, spec)
+	}
+	prompt := fmt.Sprintf("Validate the following api specification against OWASP and other guidelines: %s", specType)
+	prompts = append(prompts, genai.Text(prompt))
+
+	ct := time.Now().Format("2006-01-02-15-04-05")
+	files.CheckDirectryExists(outputFolder)
+	outputFile, err := os.Create(fmt.Sprintf("%s/%s_output_test.md", outputFolder, ct))
+	if err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	writer := bufio.NewWriter(outputFile)
+	defer writer.Flush()
+
+	response := c.ProModel().GenerateContentStream(ctx, prompts...)
+	for {
+		resp, err := response.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if resp.Candidates == nil {
+			return nil
+		}
+		for _, candidate := range resp.Candidates {
+			for _, c := range candidate.Content.Parts {
+				_, err := fmt.Fprintln(writer, c)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
