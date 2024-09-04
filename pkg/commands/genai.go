@@ -10,6 +10,8 @@ import (
 	"github.com/dipjyotimetia/jarvis/pkg/engine/files"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/gemini"
 	"github.com/dipjyotimetia/jarvis/pkg/engine/prompt"
+	"github.com/dipjyotimetia/jarvis/pkg/atlassian/confluence"
+	"github.com/dipjyotimetia/jarvis/pkg/atlassian/jira"
 	"github.com/spf13/cobra"
 )
 
@@ -128,5 +130,49 @@ func GenerateTestScenarios() *cobra.Command {
 		},
 	}
 	setGenerateScenariosFlag(cmd)
+	return cmd
+}
+
+func ReadConfluenceJira() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "read-confluence-jira",
+		Aliases: []string{"rcj"},
+		Short:   "read-confluence-jira is for reading from Confluence and Jira and suggesting test cases.",
+		Long:    `read-confluence-jira is for reading from Confluence and Jira and suggesting test cases using Google Gemini`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := context.Background()
+
+			// Initialize Confluence client
+			confluenceClient := confluence.New(ctx)
+			pages, err := confluenceClient.GetPages()
+			if err != nil {
+				return fmt.Errorf("failed to get pages from Confluence: %w", err)
+			}
+
+			// Initialize Jira client
+			jiraClient := jira.New(ctx)
+			issues, err := jiraClient.GetIssues()
+			if err != nil {
+				return fmt.Errorf("failed to get issues from Jira: %w", err)
+			}
+
+			// Initialize Gemini client
+			ai, err := gemini.New(ctx)
+			if err != nil {
+				return fmt.Errorf("failed to create Gemini engine: %w", err)
+			}
+
+			// Combine pages and issues into a single input for Gemini
+			input := append(pages, issues...)
+
+			// Generate test cases using Gemini
+			err = ai.GenerateTextStream(ctx, input, "confluence-jira")
+			if err != nil {
+				return fmt.Errorf("failed to generate test cases: %w", err)
+			}
+
+			return nil
+		},
+	}
 	return cmd
 }

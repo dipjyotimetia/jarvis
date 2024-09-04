@@ -5,31 +5,44 @@ import (
 	"log"
 	"os"
 
-	jira "github.com/ctreminiom/go-atlassian/jira/v2"
+	confluence "github.com/ctreminiom/go-atlassian/confluence/v2"
 )
 
 var (
-	HOST     = os.Getenv("JIRA_HOST")
-	USER     = os.Getenv("JIRA_USER")
-	ApiToken = os.Getenv("JIRA_API_TOKEN")
+	HOST     = os.Getenv("CONFLUENCE_HOST")
+	USER     = os.Getenv("CONFLUENCE_USER")
+	ApiToken = os.Getenv("CONFLUENCE_API_TOKEN")
 )
 
 type client struct {
-	*jira.Client
+	*confluence.Client
 }
 
 type Client interface {
-	GetIssues()
-	GetProjects()
+	GetPages() ([]string, error)
 }
 
 func New(ctx context.Context) *client {
-	jiraClient, err := jira.New(nil, HOST)
+	confluenceClient, err := confluence.New(nil, HOST)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	jiraClient.Auth.SetBasicAuth(USER, ApiToken)
+	confluenceClient.Auth.SetBasicAuth(USER, ApiToken)
 
-	return &client{jiraClient}
+	return &client{confluenceClient}
+}
+
+func (c *client) GetPages() ([]string, error) {
+	pages, _, err := c.Client.Page.Gets(context.Background(), "", "", "", "", 0, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	var pageTitles []string
+	for _, page := range pages.Results {
+		pageTitles = append(pageTitles, page.Title)
+	}
+
+	return pageTitles, nil
 }
