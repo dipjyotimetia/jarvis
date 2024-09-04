@@ -12,6 +12,14 @@ Jarvis simplifies the process by meticulously analyzing provided API specificati
 ### AI-Driven Test Case Writing
 Leveraging the capabilities of language models, Jarvis excels at crafting detailed test cases. It ensures clarity, accuracy, and consistency in the generated test cases, elevating the overall testing process.
 
+### Reading from Confluence and Jira
+Jarvis can now read from Confluence and Jira to suggest test cases using Google Gemini. This feature allows you to integrate your documentation and issue tracking systems with Jarvis to generate relevant test cases.
+
+To use this feature, run the following command:
+```sh
+jarvis read-confluence-jira
+```
+
 Experience the future of software testing with Jarvis - where AI meets precision and efficiency.
 
 [Setup Documentation](docs/setup.md)
