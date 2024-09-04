@@ -34,7 +34,7 @@ func New(ctx context.Context) *client {
 }
 
 func (c *client) GetPages() ([]string, error) {
-	pages, _, err := c.Client.Page.Gets(context.Background(), "", "", "", "", 0, 0)
+	pages, _, err := c.Client.Page.Gets(context.Background(), nil, "", 0)
 	if err != nil {
 		return nil, err
 	}

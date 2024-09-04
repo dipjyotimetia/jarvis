@@ -12,5 +12,4 @@ func (c *client) GetIssues() {
 		log.Fatal(err)
 	}
 	fmt.Println(issues.Fields.Description)
-
 }

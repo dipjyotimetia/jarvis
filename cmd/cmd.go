@@ -29,7 +29,6 @@ func init() {
 	rootCmd.AddCommand(commands.GenerateTestScenarios())
 	rootCmd.AddCommand(commands.SpecAnalyzer())
 	rootCmd.AddCommand(commands.GrpcCurlGenerator())
-	rootCmd.AddCommand(commands.ReadConfluenceJira()) // P8106
 }
 
 func Execute() {
